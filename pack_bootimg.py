@@ -58,9 +58,9 @@ def compute_id_v0(kernel, ramdisk, second,
 
 def main():
     orig_bootimg = '/workspace/boot.img'
-    new_kernel_path = '/workspace/kernel_src/out/arch/arm64/boot/Image'
+    new_kernel_path = '/workspace/kernel_patched.img'
     orig_dtb_path = '/workspace/boot_unpacked/dtb'
-    output = '/workspace/boot_new.img'
+    output = '/workspace/boot_patched.img'
 
     print("=== boot.img v2 重打包 (vivo id[32] 变体) ===")
     print(f"original:   {orig_bootimg}")
