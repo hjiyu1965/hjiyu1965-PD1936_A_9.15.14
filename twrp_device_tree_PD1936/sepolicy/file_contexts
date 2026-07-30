@@ -1,0 +1,39 @@
+# sepolicy/file_contexts - file contexts for keymaster binaries
+# Used by TWRP to label the keymaster binaries in sbin/
+
+# Keymaster / Gatekeeper / QSEE binaries
+/system/bin/qseecomd                                     u:object_r:qseecomd_exec:s0
+/system/bin/keystore                                     u:object_r:keystore_exec:s0
+/system/bin/keystore_auth                                u:object_r:keystore_auth_exec:s0
+/system/bin/wait_for_keymaster                           u:object_r:wait_for_keymaster_exec:s0
+
+/vendor/bin/qseecomd                                     u:object_r:qseecomd_exec:s0
+/vendor/bin/android\.hardware\.keymaster@3\.0-service-qti   u:object_r:keymaster-3-0_exec:s0
+/vendor/bin/android\.hardware\.keymaster@4\.0-service-qti   u:object_r:keymaster-4-0_exec:s0
+/vendor/bin/android\.hardware\.gatekeeper@1\.0-service-qti  u:object_r:gatekeeper-1-0_exec:s0
+/vendor/bin/vendor\.qti\.hardware\.cryptfshw@1\.0-service-qti  u:object_r:cryptfshw-1-0_exec:s0
+
+# sbin symlinks (when copied to recovery ramdisk /sbin/)
+/sbin/qseecomd                                           u:object_r:qseecomd_exec:s0
+/sbin/keystore                                           u:object_r:keystore_exec:s0
+/sbin/keystore_auth                                      u:object_r:keystore_auth_exec:s0
+/sbin/wait_for_keymaster                                 u:object_r:wait_for_keymaster_exec:s0
+/sbin/android\.hardware\.keymaster@3\.0-service-qti      u:object_r:keymaster-3-0_exec:s0
+/sbin/android\.hardware\.keymaster@4\.0-service-qti      u:object_r:keymaster-4-0_exec:s0
+/sbin/android\.hardware\.gatekeeper@1\.0-service-qti     u:object_r:gatekeeper-1-0_exec:s0
+/sbin/vendor\.qti\.hardware\.cryptfshw@1\.0-service-qti  u:object_r:cryptfshw-1-0_exec:s0
+
+# Keymaster libraries
+/system/lib64/libkeymaster.*                             u:object_r:system_lib_file:s0
+/system/lib64/libkeystore.*                              u:object_r:system_lib_file:s0
+/system/lib64/libqtikeymaster.*                          u:object_r:system_lib_file:s0
+/system/lib64/libsoftkeymasterdevice.*                   u:object_r:system_lib_file:s0
+/system/lib64/libvivogatekeeper.*                        u:object_r:system_lib_file:s0
+/system/lib64/android\.hardware\.keymaster.*             u:object_r:system_lib_file:s0
+/system/lib64/android\.hardware\.gatekeeper.*            u:object_r:system_lib_file:s0
+/system/lib64/vendor\.vivo\.hardware\.wifi\.keystore.*   u:object_r:system_lib_file:s0
+
+/vendor/lib64/libQSEEComAPI.*                            u:object_r:vendor_lib_file:s0
+/vendor/lib64/libcryptfshw.*                             u:object_r:vendor_lib_file:s0
+/vendor/lib64/hw/android\.hardware\.gatekeeper.*         u:object_r:vendor_lib_file:s0
+/vendor/lib64/vendor\.vivo\.hardware\.wifi\.keystore.*   u:object_r:vendor_lib_file:s0

@@ -1,0 +1,69 @@
+# ueventd.qcom.rc - iQOO PD1936 / SM8150
+# Firmware directory + permissions for qcom devices
+
+# Firmware directory Path
+firmware_directories /vendor/firmware_mnt/image/
+
+# the DIAG device node is not world writable/readable.
+/dev/diag                 0666   system     oem_2901
+/dev/mhi_*_pipe_4         0660   system     system
+
+/dev/genlock              0666   system     system
+/dev/wlan                 0660   wifi       wifi
+/dev/kgsl                 0666   system     system
+/dev/kgsl-3d0             0666   system     system
+/dev/ion                  0664   system     system
+/dev/membuf               0664   system     system
+/dev/rtc0                 0660   system     system
+/dev/qseecom              0660   system     drmrpc
+/dev/qce                  0660   system     drmrpc
+/dev/smcinvoke            0660   system     drmrpc
+/dev/qsee_ipc_irq_spss    0660   system     drmrpc
+/dev/seemplog             0660   system     system
+/dev/spcom                0660   system     system
+/dev/spss_utils           0660   system     system
+/dev/sp_kernel            0660   system     system
+/dev/sp_nvm               0660   system     system
+/dev/sp_ssr               0660   system     system
+/dev/sp_keymaster         0660   system     system
+/dev/sp_keymaster_ssr     0660   system     system
+/dev/sec_nvm_*            0660   system     system
+/dev/cryptoapp            0660   system     system
+/dev/spdaemon_ssr         0660   system     system
+/dev/spu_hal_ssr          0660   system     system
+/dev/iuicc*               0660   system     system
+
+# QDSS
+/dev/byte-cntr            0660   system    oem_2902
+/dev/mhi_qdss             0660   system    oem_2902
+
+# qg
+/dev/qg                   0660  system     system
+/dev/qg_battery           0660  system     system
+
+# wlan
+/dev/wcnss_wlan           0660   system     system
+/dev/wcnss_ctrl           0660   system     system
+
+# Add device block for FRP
+/dev/block/platform/soc/7824900.sdhci/by-name/config    0600   system     system
+/dev/block/platform/soc/7464900.sdhci/by-name/frp       0600   system     system
+/dev/block/platform/soc/624000.ufshc/by-name/frp        0600   system     system
+/dev/block/platform/soc/1da4000.ufshc/by-name/frp       0600   system     system
+/dev/block/platform/soc/c0c4000.sdhci/by-name/frp       0600   system     system
+/dev/block/platform/soc/1d84000.ufshc/by-name/frp       0600   system     system
+/dev/block/platform/soc/7c4000.sdhci/by-name/frp        0600   system     system
+/dev/block/platform/soc/4744000.sdhci/by-name/frp       0600   system     system
+/dev/block/platform/soc/4804000.ufshc/by-name/frp       0600   system     system
+/dev/block/platform/soc/8804000.sdhci/by-name/frp       0600   system     system
+
+# Kmsg device
+/dev/kmsg                                               0620   root       system
+
+# Fingerprint device
+/dev/qbt*                 0660   system     system
+
+# USB role switch
+/sys/class/dual_role_usb/*    data_role    0660    system    system
+/sys/class/dual_role_usb/*    power_role   0660    system    system
+/sys/class/dual_role_usb/*    mode         0660    system    system

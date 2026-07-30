@@ -1,0 +1,97 @@
+# init.recovery.qcom.rc - iQOO PD1936 / SM8150
+# Keymaster/Gatekeeper/QSEE decryption chain for FBE
+
+on early-boot
+    # Write hw revision properties
+    setprop ro.boot.hardware qcom
+    # Start QSEE daemon first (must run before keymaster)
+    start qseecomd
+    # Start hardware FBE decryption daemon
+    start cryptfshw-1-0
+
+on property:recovery.fastboot_mode=1
+    start vendor.boot-hal-1-0
+    start health-hal-2-0
+
+on property:recovery.service=1
+    start keymaster-4-0
+    start gatekeeper-1-0
+    exec_start wait_for_keymaster
+    start guardianangle
+    setprop recovery.state.services.ready 1
+
+# ---- Keymaster services ----
+
+service qseecomd /vendor/bin/qseecomd
+    disabled
+    user root
+    group root
+    seclabel u:r:recovery:s0
+
+service keymaster-3-0 /vendor/bin/android.hardware.keymaster@3.0-service-qti
+    disabled
+    user root
+    group root drmrpc
+    seclabel u:r:recovery:s0
+
+service keymaster-4-0 /vendor/bin/android.hardware.keymaster@4.0-service-qti
+    disabled
+    user root
+    group root drmrpc
+    seclabel u:r:recovery:s0
+
+service gatekeeper-1-0 /vendor/bin/android.hardware.gatekeeper@1.0-service-qti
+    disabled
+    user root
+    group root
+    seclabel u:r:recovery:s0
+
+# NOTE: cryptfshw-1-0 binary must be extracted from stock vendor partition
+# and placed in prebuilt/vendor/bin/vendor.qti.hardware.cryptfshw@1.0-service-qti
+service cryptfshw-1-0 /vendor/bin/vendor.qti.hardware.cryptfshw@1.0-service-qti
+    disabled
+    user root
+    group root
+    seclabel u:r:recovery:s0
+
+service wait_for_keymaster /system/bin/wait_for_keymaster
+    disabled
+    user root
+    seclabel u:r:recovery:s0
+
+service keystore_auth /system/bin/keystore_auth
+    disabled
+    user system
+    group root system
+    seclabel u:r:recovery:s0
+
+service keystore /system/bin/keystore /data/misc/keystore
+    disabled
+    user keystore
+    group keystore drmrpc readproc log
+    writepid /dev/cpuset/foreground/tasks
+    seclabel u:r:recovery:s0
+
+service guardianangle /system/bin/guardianangle
+    disabled
+    user root
+    seclabel u:r:recovery:s0
+
+# ---- Fastbootd support services (only used when fastbootd enabled) ----
+
+service vendor.boot-hal-1-0 /vendor/bin/hw/android.hardware.boot@1.0-service
+    disabled
+    user root
+    group root
+    seclabel u:r:recovery:s0
+
+service health-hal-2-0 /vendor/bin/hw/android.hardware.health@2.0-service
+    disabled
+    user root
+    group root
+    seclabel u:r:recovery:s0
+
+# ---- Trigger decryption chain when recovery services ready ----
+on property:recovery.state.services.ready=1
+    # Tell vold to retry FBE mount with keys now available
+    setprop sys.userdata.decrypt true

@@ -1,0 +1,111 @@
+# sepolicy/recovery.te - Allow recovery domain to access keymaster/qsee/tee
+# for FBE decryption
+
+# Allow recovery to access qsee_ipc_irq_spss device
+allow recovery qsee_ipc_irq_spss_device:chr_file rw_file_perms;
+
+# Allow recovery to access qseecom device (QSEE communication)
+allow recovery qsee_device:chr_file rw_file_perms;
+
+# Allow recovery to access tee device (Trusted Execution Environment)
+allow recovery tee_device:chr_file rw_file_perms;
+
+# Allow recovery to access qce (Qualcomm Crypto Engine)
+allow recovery qce_device:chr_file rw_file_perms;
+
+# Allow recovery to access smcinvoke device
+allow recovery smcinvoke_device:chr_file rw_file_perms;
+
+# Allow recovery to access ice device (Inline Crypto Engine)
+allow recovery ice_device:chr_file rw_file_perms;
+
+# Allow recovery to start and transition to keymaster
+allow recovery keymaster-4-0:process transition;
+allow recovery keymaster-3-0:process transition;
+allow recovery gatekeeper-1-0:process transition;
+allow recovery qseecomd:process transition;
+allow recovery cryptfshw-1-0:process transition;
+allow recovery wait_for_keymaster:process transition;
+allow recovery keystore:process transition;
+allow recovery keystore_auth:process transition;
+
+# Allow recovery to execute keymaster binaries
+allow recovery keymaster_exec:file rx_file_perms;
+allow recovery gatekeeper_exec:file rx_file_perms;
+allow recovery qseecomd_exec:file rx_file_perms;
+allow recovery cryptfshw_exec:file rx_file_perms;
+allow recovery wait_for_keymaster_exec:file rx_file_perms;
+allow recovery keystore_exec:file rx_file_perms;
+allow recovery keystore_auth_exec:file rx_file_perms;
+
+# Allow recovery to access hwbinder / binder for keymaster HIDL IPC
+allow recovery hwbinder_device:chr_file rw_file_perms;
+allow recovery binder_device:chr_file rw_file_perms;
+allow recovery vndbinder_device:chr_file rw_file_perms;
+
+# Allow recovery to access servicemanager / hwservicemanager
+allow recovery servicemanager:binder call;
+allow recovery hwservicemanager:binder call;
+allow recovery vndservicemanager:binder call;
+
+# Allow recovery to find keymaster HIDL services
+allow recovery hal_keymaster:hwservice_manager find;
+allow recovery hal_gatekeeper:hwservice_manager find;
+allow recovery hal_cryptfshw:hwservice_manager find;
+
+# Allow recovery to access crypto-related properties
+allow recovery crypto_prop:property_service set;
+allow recovery crypto_volume_prop:property_service set;
+allow recovery fbe_prop:property_service set;
+
+# Allow recovery to set recovery properties
+set_prop(recovery, recovery_prop)
+set_prop(recovery, system_prop)
+set_prop(recovery, ctl_reboot_prop)
+set_prop(recovery, ctl_start_prop)
+set_prop(recovery, ctl_stop_prop)
+
+# Allow recovery to mount/unmount data
+allow recovery labeledfs:filesystem { mount unmount remount };
+allow recovery unlabeled:dir { mounton };
+
+# Allow recovery to access dm device (verity / dm-default-key)
+allow recovery dm_device:chr_file rw_file_perms;
+allow recovery dm_device:blk_file rw_file_perms;
+
+# Allow recovery to access metadata partition (FBE key directory)
+allow recovery metadata_block_device:blk_file rw_file_perms;
+allow recovery userdata_block_device:blk_file rw_file_perms;
+
+# Allow recovery to access vold
+allow recovery vold:process { signal sigchld };
+allow recovery vold:fd use;
+allow recovery vold_data_file:dir search;
+allow recovery vold_data_file:file rw_file_perms;
+
+# Allow recovery to access keystore data
+allow recovery keystore_data_file:dir create_dir_perms;
+allow recovery keystore_data_file:file create_file_perms;
+
+# Allow recovery to access firmware for keymaster
+allow recovery firmware_file:dir search;
+allow recovery firmware_file:file r_file_perms;
+allow recovery vendor_firmware_file:dir search;
+allow recovery vendor_firmware_file:file r_file_perms;
+
+# Allow recovery to read /proc for keymaster status
+allow recovery proc:file r_file_perms;
+allow recovery proc_cmdline:file r_file_perms;
+
+# Allow recovery to access system libs (keymaster libs)
+allow recovery system_lib_file:dir search;
+allow recovery system_lib_file:file rx_file_perms;
+allow recovery vendor_lib_file:dir search;
+allow recovery vendor_lib_file:file rx_file_perms;
+
+# Allow recovery to access sbin (where keymaster binaries live)
+allow recovery sbin_file:dir search;
+allow recovery sbin_file:file rx_file_perms;
+
+# Allow recovery to use ashmem (for binder transactions)
+allow recovery ashmem_device:chr_file rw_file_perms;

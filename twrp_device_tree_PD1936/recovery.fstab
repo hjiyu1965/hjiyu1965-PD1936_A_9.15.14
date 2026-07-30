@@ -1,0 +1,48 @@
+# Copyright (c) 2017, The Linux Foundation. All rights reserved.
+#
+# TWRP recovery.fstab for iQOO PD1936 (V1936A)
+# Platform: Qualcomm SM8150 / msmnile
+# Android 11 / FBE f2fs + ICE + wrappedkey / Keymaster 4.0
+#
+# <src>                                                 <mnt_point>             <type>  <mnt_flags and options>                            <fs_mgr_flags>
+
+# ---- rootfs / system-as-root ----
+/dev/block/bootdevice/by-name/system                    /                       ext4    ro,barrier=1,discard                               wait,slotselect
+
+# ---- vendor / odm / oem ----
+/dev/block/bootdevice/by-name/vendor                    /vendor                 ext4    ro,barrier=1                                       wait,slotselect
+/dev/block/bootdevice/by-name/odm                       /odm                    ext4    ro,barrier=1,discard                               wait,slotselect
+/dev/block/bootdevice/by-name/oem                       /oem                    ext4    ro,barrier=1,discard                               wait,slotselect
+
+# ---- metadata (FBE key dir, 必须挂) ----
+/dev/block/bootdevice/by-name/metadata                  /metadata               ext4    noatime,nosuid,nodev,discard                       wait,check,formattable
+
+# ---- userdata (FBE 解密关键条目,加密参数不可删) ----
+/dev/block/bootdevice/by-name/userdata                  /data                   f2fs    noatime,nosuid,nodev,discard,reserve_root=32768,resgid=1065,fsync_mode=nobarrier,inlinecrypt    latemount,wait,resize,check,formattable,fileencryption=ice,wrappedkey,reservedsize=128M,quota,checkpoint=fs,fscompress
+
+# ---- cache ----
+/dev/block/bootdevice/by-name/cache                     /cache                  ext4    noatime,nosuid,nodev,barrier=1                     wait,formattable
+
+# ---- persist (备份/恢复用) ----
+/dev/block/bootdevice/by-name/persist                   /persist                ext4    noatime,nosuid,nodev,barrier=1                     wait
+
+# ---- firmware 分区,只读挂载 ----
+/dev/block/bootdevice/by-name/modem                     /vendor/firmware_mnt    vfat    ro,shortname=lower,uid=0,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0 wait
+/dev/block/bootdevice/by-name/dsp                       /vendor/dsp             ext4    ro,nosuid,nodev,barrier=1                          wait
+/dev/block/bootdevice/by-name/bluetooth                 /vendor/bt_firmware     vfat    ro,shortname=lower,uid=1002,gid=3002,dmask=227,fmask=337,context=u:object_r:bt_firmware_file:s0 wait
+
+# ---- 仅备份,不挂载 (TWRP 备份/还原使用) ----
+/dev/block/bootdevice/by-name/boot                      /boot                   emmc    defaults                                           wait,slotselect,flags=backup=1
+/dev/block/bootdevice/by-name/recovery                  /recovery               emmc    defaults                                           wait,flags=backup=1
+/dev/block/bootdevice/by-name/vbmeta                    /vbmeta                 emmc    defaults                                           wait,flags=backup=1
+/dev/block/bootdevice/by-name/dtbo                      /dtbo                   emmc    defaults                                           wait,flags=backup=1
+/dev/block/bootdevice/by-name/misc                      /misc                   emmc    defaults                                           defaults
+
+# ---- 可移动存储 ----
+/devices/platform/soc/8804000.sdhci/mmc_host*           /external_sd            vfat    nosuid,nodev                                       wait,voldmanaged=external_sd:auto,removable
+/devices/platform/soc/1da4000.ufshc_card/host*          /external_sd            vfat    nosuid,nodev                                       wait,voldmanaged=external_sd:auto,removable
+/devices/platform/soc/*.ssusb/*.dwc3/xhci-hcd.*.auto*   /usb-otg                vfat    nosuid,nodev                                       wait,voldmanaged=usb-otg:auto,removable
+
+# ---- 直挂的 SD/OTG (对应原版 /dev/block/sdg1 与 mmcblk1p1) ----
+/dev/block/sdg1                                         /otg                    vfat    nosuid,nodev,barrier=1,data=ordered,nodelalloc     wait
+/dev/block/mmcblk1p1                                    /sdcard                 vfat    nosuid,nodev,barrier=1,data=ordered,nodelalloc     wait
