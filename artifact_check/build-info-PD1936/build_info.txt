@@ -1,0 +1,7 @@
+Build Date: 2026-08-02 06:54:14 UTC
+Device: PD1936
+TWRP Branch: twrp-11
+Build Target: eng
+Git Commit: f696470253fcd5fab93cc607f1aa6b287100a8f1
+Git Ref: refs/heads/main
+Cryptfshw: false
